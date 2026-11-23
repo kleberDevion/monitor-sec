@@ -15,7 +15,7 @@
 
 > Branding
 
-- Empresa Capixaba Megasec: IG(https://www.instagram.com/megasec.es/)
+- Empresa Capixaba Megasec: IG(https://www.instagram.com/megasec.es/), WEBSITE: https://megasec.com.br/
 - Logo, Tonalidade de cores da marca
 
 Objetivos:
