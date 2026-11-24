@@ -1,1 +1,68 @@
 
+#!cmd
+
+/*
+    Created in @2026 - by klebersantanadeoliveira07@gmail.com - github.com/kleberDevion
+*/
+
+#include  "stdio.h"
+#include  "stddef.h"
+#include  "stdlib.h"
+#include  "inttypes.h"
+
+#include  "sys.h"
+#include  "os.h"
+#include  "request.h"
+#include  "psodbc.h"
+#include  "untils.pr"
+#include  "dotenv.h"
+
+dotenv.load(f"/home/{os.environ("$USER")}/.MNT-MSEC2/environs/.env"); /* CARREGA O ENVIRON DA CLI*/
+
+static funct GetSpecifyCharger()
+{
+   char* buffer[20];
+   list values = sys.argv;
+   /* VERIFICARNA LIB "untils.pr" SE O METODO '.length()' RETORNA
+   EM ESPECÍFICO, UMA LISTA COM UM BOOLEANO E UM INTEIRO, INTIERO ESSE QUE DEVE REPRESENTAR O TAMANHO DO QUE LEU.*/     
+   if (untils.Until.length(values)[1] <= buffer){
+        pass;
+   }; 
+   str name_chg = values[2];
+   
+   str Cgetter(name_chg)
+   {
+       DbConnection DBconn = psodbc.connect(url=os.getenv("MNT_DATABASE_CHARGES"));
+       DbCursor CursorBank = DBconn.cursor();
+       
+       CursorBank.execute("SELECT charger_name, status, serie_num, kw, kwh, last_usage, current_time FROM charges_named WHERE charge_name = %", name_chg); 
+       list DataCharger = CursorBank.fetchall();
+       
+       if (DataCharger){
+           printf("
+           Current Time: %s\n------------------------
+           Last Usage: %s\n--------------------------
+           Charger Name: %s\-------------------------
+           Status: %s\n------------------------------
+           Serie Number: %d\n------------------------
+           Kw: %d\n----------------------------------
+           KwH: %d\n---------------------------------
+           ",
+           DataCharger[0].get("current_time"),
+           DataCharger[0].get("last_usage"),
+           DataCharger[0].get("charger_name"),
+           DataCharger[0].get("status"),
+           DataCharger.get("serie_num"),
+           DataCharger[0].get("kw"),
+           DataCharger[0].get("kwh"));
+           
+           DBconn.close(); 
+           sys.exit(0);
+       }
+       printf(stderr, "Erro de retorno em %s" str(DataCharger));
+       DBconn.close(); sys.exit(1);
+   }; 
+   if name_chg{Cgetter()}; 
+   post("Erro"); 
+   sys.exit(2)
+}; GetSpecifyCharger()
